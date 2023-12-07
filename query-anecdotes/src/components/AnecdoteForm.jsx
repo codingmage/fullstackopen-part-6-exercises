@@ -20,6 +20,12 @@ const AnecdoteForm = () => {
       setTimeout(() => {
         dispatch({type: "RESET"})
       }, 5000) 
+    },
+    onError: () => {
+      dispatch({type: "SHORT"})
+      setTimeout(() => {
+        dispatch({type: "RESET"})
+      }, 5000) 
     }
   })
 
