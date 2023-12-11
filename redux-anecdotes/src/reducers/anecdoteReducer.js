@@ -1,5 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit"
-import anecdoteService from "../services/anecdotes"
+import { createSlice } from "@reduxjs/toolkit";
+import anecdoteService from "../services/anecdotes";
 
 /* const anecdotesAtStart = [
   'If it hurts, do it more often',
@@ -23,50 +23,58 @@ import anecdoteService from "../services/anecdotes"
  const initialState = anecdotesAtStart.map(asObject)
  */
 
-const initialState = []
+const initialState = [];
 
 const anecdoteSlice = createSlice({
   name: "anecdotes",
   initialState,
   reducers: {
     increaseVotes(state, action) {
-      const id = action.payload
-      const anecdoteToUpdate = state.find(note => note.id === id)
-      const updatedAnecdote = {...anecdoteToUpdate, votes: anecdoteToUpdate.votes + 1}
-      return state.map(anecdote => anecdote.id !== id ? anecdote : updatedAnecdote)
+      const id = action.payload;
+      const anecdoteToUpdate = state.find((note) => note.id === id);
+      const updatedAnecdote = {
+        ...anecdoteToUpdate,
+        votes: anecdoteToUpdate.votes + 1,
+      };
+      return state.map((anecdote) =>
+        anecdote.id !== id ? anecdote : updatedAnecdote
+      );
     },
     appendAnecdote(state, action) {
-      state.push(action.payload)
+      // redux-toolkit uses immer which allows this
+      return state.push(action.payload);
+      // otherwise return [...state, action.payload]
     },
     setAnecdotes(state, action) {
-      return action.payload
-    }
+      return action.payload;
+    },
   },
-})
+});
 
-export const { increaseVotes, appendAnecdote, setAnecdotes } = anecdoteSlice.actions
-export default anecdoteSlice.reducer
+export const { increaseVotes, appendAnecdote, setAnecdotes } =
+  anecdoteSlice.actions;
+export default anecdoteSlice.reducer;
 
 export const initializeAnecdotes = () => {
-  return async dispatch => {
-    const anecdotes = await anecdoteService.getAll()
-    dispatch(setAnecdotes(anecdotes))
-  }
-}
+  return async (dispatch) => {
+    const anecdotes = await anecdoteService.getAll();
+    dispatch(setAnecdotes(anecdotes));
+  };
+};
 
-export const createNewAnecdote = content => {
-  return async dispatch => {
-    const newAnecdote = await anecdoteService.createAnecdote(content)
-    dispatch(appendAnecdote(newAnecdote))
-  }
-}
+export const createNewAnecdote = (content) => {
+  return async (dispatch) => {
+    const newAnecdote = await anecdoteService.createAnecdote(content);
+    dispatch(appendAnecdote(newAnecdote));
+  };
+};
 
 export const voteUpAnecdote = (id, anecdote) => {
-  return async dispatch => {
-    const updatedAnecdote = await anecdoteService.updateVoteCount(id, anecdote)
-    dispatch(increaseVotes(updatedAnecdote.id))
-  }
-}
+  return async (dispatch) => {
+    const updatedAnecdote = await anecdoteService.updateVoteCount(id, anecdote);
+    dispatch(increaseVotes(updatedAnecdote.id));
+  };
+};
 /* const anecdoteReducer = (state = initialState, action) => {
   console.log('state now: ', state)
   console.log('action', action)
